@@ -1,0 +1,84 @@
+# ============================================================
+# ETL Test Framework - Central Configuration
+# ============================================================
+
+environments:
+  dev:
+    source_db:
+      host: "localhost"
+      port: 3306
+      database: "etl_source_dev"
+      username: "etl_user"
+      password: "etl_pass"           # Use .env in production
+      pool_size: 5
+      max_overflow: 10
+
+    target_db:
+      host: "localhost"
+      port: 3306
+      database: "etl_target_dev"
+      username: "etl_user"
+      password: "etl_pass"
+      pool_size: 5
+      max_overflow: 10
+
+  staging:
+    source_db:
+      host: "${SOURCE_DB_HOST}"
+      port: 3306
+      database: "${SOURCE_DB_NAME}"
+      username: "${SOURCE_DB_USER}"
+      password: "${SOURCE_DB_PASS}"
+
+    target_db:
+      host: "${TARGET_DB_HOST}"
+      port: 3306
+      database: "${TARGET_DB_NAME}"
+      username: "${TARGET_DB_USER}"
+      password: "${TARGET_DB_PASS}"
+
+  prod:
+    source_db:
+      host: "${PROD_SOURCE_DB_HOST}"
+      port: 3306
+      database: "${PROD_SOURCE_DB_NAME}"
+      username: "${PROD_SOURCE_DB_USER}"
+      password: "${PROD_SOURCE_DB_PASS}"
+
+    target_db:
+      host: "${PROD_TARGET_DB_HOST}"
+      port: 3306
+      database: "${PROD_TARGET_DB_NAME}"
+      username: "${PROD_TARGET_DB_USER}"
+      password: "${PROD_TARGET_DB_PASS}"
+
+# CSV Source Paths
+csv_sources:
+  customers: "/data/sources/customers.csv"
+  orders: "/data/sources/orders.csv"
+  products: "/data/sources/products.csv"
+  transactions: "/data/sources/transactions.csv"
+
+# Thresholds & Tolerances
+thresholds:
+  max_null_percentage: 5.0           # Max allowed null % per column
+  max_duplicate_percentage: 0.1      # Max allowed duplicate % per table
+  row_count_tolerance_pct: 0.0       # Zero tolerance for row count mismatch
+  numeric_tolerance: 0.001           # Floating point comparison tolerance
+
+# Table Mappings (source -> target)
+table_mappings:
+  - source_table: "raw_customers"
+    target_table: "dim_customers"
+    key_columns: ["customer_id"]
+
+  - source_table: "raw_orders"
+    target_table: "fact_orders"
+    key_columns: ["order_id"]
+
+  - source_table: "raw_products"
+    target_table: "dim_products"
+    key_columns: ["product_id"]
+
+# Active environment (override via ENV variable ETL_ENV)
+active_env: "dev"
